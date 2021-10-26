@@ -8,30 +8,29 @@ using System.Threading.Tasks;
 
 namespace ConjuntoApiSprint6.ModelConfiguration.SysProduto
 {
-	public class Produto_TagConfiguration : IEntityTypeConfiguration<Produto_Tag>
+	public class Cidade_ProdutoConfiguration : IEntityTypeConfiguration<Cidade_Produto>
 	{
-		public void Configure(EntityTypeBuilder<Produto_Tag> builder)
+		public void Configure(EntityTypeBuilder<Cidade_Produto> builder)
 		{
 			builder
-				.ToTable("Produto_Tag");
+				.ToTable("Cidade_Produto");
 
-			builder.Property<Guid>("TagId").IsRequired();
+			builder.Property<Guid>("CidadeId").IsRequired();
 			builder.Property<Guid>("ProdutoId").IsRequired();
 
-			builder.HasKey("TagId", "ProdutoId");
+			builder.HasKey("CidadeId", "ProdutoId");
 
 			builder
 				.HasOne(PT => PT.produto)
-				.WithMany(P => P.Tags)
+				.WithMany(P => P.cidades)
 				.HasForeignKey("ProdutoId")
 				.IsRequired();
 
 			builder
-				.HasOne(PT => PT.tag)
-				.WithMany(T => T.Produtos)
-				.HasForeignKey("TagId")
+				.HasOne(PT => PT.cidade)
+				.WithMany(C => C.produtos)
+				.HasForeignKey("CidadeId")
 				.IsRequired();
 		}
 	}
 }
-

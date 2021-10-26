@@ -15,7 +15,7 @@ namespace ConjuntoApiSprint6.Contexts
 		public DbSet<Endereco> Enderecos { get; set; }
 		public DbSet<Estado> Estados { get; set; }
 
-		public SysClienteDbContext(DbContextOptions options) : base(options)
+		public SysClienteDbContext(DbContextOptions<SysClienteDbContext> options) : base(options)
 		{
 
 		}

@@ -10,6 +10,6 @@ namespace ConjuntoApiSprint6.Models.SysProduto
 		public Guid Id { get; set; }
 		public string cidade { get; set; }
 		public Estado estado { get; set; }
-		public Cidade_Produto produtos { get; set; }
+		public List<Cidade_Produto> produtos { get; set; }
 	}
 }

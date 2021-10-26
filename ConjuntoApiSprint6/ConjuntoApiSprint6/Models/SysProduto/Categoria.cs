@@ -9,6 +9,6 @@ namespace ConjuntoApiSprint6.Models.SysProduto
 	{
 		public Guid Id { get; set; }
 		public string categoria { get; set; }
-		public Categoria_Produto Produtos { get; set; }
+		public List<Categoria_Produto> Produtos { get; set; }
 	}
 }

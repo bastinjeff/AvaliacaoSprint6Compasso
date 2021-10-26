@@ -13,7 +13,7 @@ namespace ConjuntoApiSprint6.Models.SysProduto
 		public double Preco { get; set; }
 		public List<Cidade_Produto> cidades { get; set; }
 		public List<Produto_Tag> Tags { get; set; }
-		public List<Categoria> categorias { get; set; }
+		public List<Categoria_Produto> categorias { get; set; }
 
 	}
 }

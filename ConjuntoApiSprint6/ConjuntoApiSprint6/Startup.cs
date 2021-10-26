@@ -30,8 +30,16 @@ namespace ConjuntoApiSprint6
 		{
 
 			services.AddControllers();
-			services.AddDbContext<SysClienteDbContext>(options => options.UseSqlServer("Data Source=PCGRANDE\\SQLEXPRESS;" +
+			services.AddDbContext<SysClienteDbContext>(options => options.UseSqlServer("Data Source=localhost\\SQLEXPRESS;" +
 				"database=SysClienteDb;" +
+				"Integrated Security=True;" +
+				"Connect Timeout=5;" +
+				"Encrypt=False;" +
+				"TrustServerCertificate=False;" +
+				"ApplicationIntent=ReadWrite;" +
+				"MultiSubnetFailover=False"));
+			services.AddDbContext<SysProdutoDbContext>(options => options.UseSqlServer("Data Source=localhost\\SQLEXPRESS;" +
+				"database=SysProdutoDb;" +
 				"Integrated Security=True;" +
 				"Connect Timeout=5;" +
 				"Encrypt=False;" +
@@ -45,9 +53,11 @@ namespace ConjuntoApiSprint6
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-		public void Configure(IApplicationBuilder app, IWebHostEnvironment env, SysClienteDbContext ClienteDBC)
+		public void Configure(IApplicationBuilder app, IWebHostEnvironment env, 
+			SysClienteDbContext ClienteDBC, SysProdutoDbContext ProdutoDBC)
 		{
 			ClienteDBC.Database.Migrate();
+			ProdutoDBC.Database.Migrate();
 			if (env.IsDevelopment())
 			{
 				app.UseDeveloperExceptionPage();

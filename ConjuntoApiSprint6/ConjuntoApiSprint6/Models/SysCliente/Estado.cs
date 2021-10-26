@@ -7,6 +7,7 @@ namespace ConjuntoApiSprint6.Models.SysCliente
 {
 	public class Estado
 	{
+		public Guid Id { get; set; }
 		public string UF { get; set; }
 	}
 }

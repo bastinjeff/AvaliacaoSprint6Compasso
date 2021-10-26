@@ -1,7 +1,9 @@
+using ConjuntoApiSprint6.Contexts;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -28,6 +30,14 @@ namespace ConjuntoApiSprint6
 		{
 
 			services.AddControllers();
+			services.AddDbContext<SysClienteDbContext>(options => options.UseSqlServer("Data Source=localhost\\SQLEXPRESS;" +
+				"dabatase=SysClienteDb" +
+				"Integrated Security=True;" +
+				"Connect Timeout=5;" +
+				"Encrypt=False;" +
+				"TrustServerCertificate=False;" +
+				"ApplicationIntent=ReadWrite;" +
+				"MultiSubnetFailover=False"));
 			services.AddSwaggerGen(c =>
 			{
 				c.SwaggerDoc("v1", new OpenApiInfo { Title = "ConjuntoApiSprint6", Version = "v1" });

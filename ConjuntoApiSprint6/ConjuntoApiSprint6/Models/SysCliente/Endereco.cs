@@ -13,7 +13,9 @@ namespace ConjuntoApiSprint6.Models.SysCliente
 		public string Rua { get; set; }
 		public string Numero { get; set; }
 		public string Complemento { get; set; }
+		public bool Principal { get; set; }
 		public Estado UF { get; set; }
-		public List<Endereco_Cliente> Clientes { get; set; }
+		public Cliente cliente { get; set; }
+		
 	}
 }

@@ -52,12 +52,28 @@ namespace ConjuntoApiSprint6.ModelConfiguration.SysCliente
 				.IsRequired();
 
 			builder
+				.Property(E => E.Principal)
+				.HasColumnName("Principal")
+				.HasColumnType("bool")
+				.IsRequired();
+
+			builder
 				.Property<Guid>("EstadoId").IsRequired();
 
 			builder
 				.HasOne(E => E.UF)
 				.WithMany(U => U.enderecos)
-				.HasForeignKey("EstadoId");
+				.HasForeignKey("EstadoId")
+				.IsRequired();
+
+			builder
+				.Property<Guid>("ClienteId").IsRequired();
+
+			builder
+				.HasOne(E => E.cliente)
+				.WithMany(C => C.Enderecos)
+				.HasForeignKey("ClienteId")
+				.IsRequired();
 		}
 	}
 }

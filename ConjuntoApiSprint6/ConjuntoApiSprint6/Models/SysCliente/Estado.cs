@@ -9,5 +9,7 @@ namespace ConjuntoApiSprint6.Models.SysCliente
 	{
 		public Guid Id { get; set; }
 		public string UF { get; set; }
+
+		public List<Endereco> enderecos { get; set; }
 	}
 }

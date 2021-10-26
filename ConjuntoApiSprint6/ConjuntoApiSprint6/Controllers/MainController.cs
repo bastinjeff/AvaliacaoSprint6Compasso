@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,9 +9,10 @@ namespace ConjuntoApiSprint6.Controllers
 {
 	public class MainController : ControllerBase
 	{
-		public MainController()
+		protected IMapper mapper;
+		public MainController(IMapper mapper)
 		{
-
+			this.mapper = mapper;
 		}
 	}
 }

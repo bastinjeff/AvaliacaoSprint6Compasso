@@ -1,0 +1,15 @@
+{
+  "version": 2,
+  "dgSpecHash": "iRbcEyHJTJlKD8IXjf9r4I1qr546SIAmT0UglgusUF8kJXQ7Ey7DCL694GbESRvlBrysLyqMsD09yn9jrFFNgw==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\jrfri\\Documents\\GitHub\\AvaliacaoSprint6Compasso\\ConjuntoApiSprint6\\ConjuntoApiSprint6\\ConjuntoApiSprint6.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\jrfri\\.nuget\\packages\\microsoft.extensions.apidescription.server\\3.0.0\\microsoft.extensions.apidescription.server.3.0.0.nupkg.sha512",
+    "C:\\Users\\jrfri\\.nuget\\packages\\microsoft.openapi\\1.2.3\\microsoft.openapi.1.2.3.nupkg.sha512",
+    "C:\\Users\\jrfri\\.nuget\\packages\\swashbuckle.aspnetcore\\5.6.3\\swashbuckle.aspnetcore.5.6.3.nupkg.sha512",
+    "C:\\Users\\jrfri\\.nuget\\packages\\swashbuckle.aspnetcore.swagger\\5.6.3\\swashbuckle.aspnetcore.swagger.5.6.3.nupkg.sha512",
+    "C:\\Users\\jrfri\\.nuget\\packages\\swashbuckle.aspnetcore.swaggergen\\5.6.3\\swashbuckle.aspnetcore.swaggergen.5.6.3.nupkg.sha512",
+    "C:\\Users\\jrfri\\.nuget\\packages\\swashbuckle.aspnetcore.swaggerui\\5.6.3\\swashbuckle.aspnetcore.swaggerui.5.6.3.nupkg.sha512"
+  ],
+  "logs": []
+}

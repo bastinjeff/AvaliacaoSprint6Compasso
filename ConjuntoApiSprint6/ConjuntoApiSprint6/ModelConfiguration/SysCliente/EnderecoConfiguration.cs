@@ -54,7 +54,7 @@ namespace ConjuntoApiSprint6.ModelConfiguration.SysCliente
 			builder
 				.Property(E => E.Principal)
 				.HasColumnName("Principal")
-				.HasColumnType("bool")
+				.HasColumnType("bit")
 				.IsRequired();
 
 			builder

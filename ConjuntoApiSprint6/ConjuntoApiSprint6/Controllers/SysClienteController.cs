@@ -26,15 +26,15 @@ namespace ConjuntoApiSprint6.Controllers
 		[HttpGet]
 		public IActionResult ReturnAll()
 		{
-			var Clientes = ClienteDbContext.Clientes.Include(X => X.Enderecos).ThenInclude(X => X.UF);
-			return Ok(Clientes);
+			IEnumerable<Cliente> Clientes = ClienteDbContext.Clientes.Include(X => X.Enderecos).ThenInclude(X => X.UF);
+			var ClientesDTO = mapper.Map<IEnumerable<GetClienteDTO>>(Clientes);
+			return Ok(ClientesDTO);
 		}
 
 		[HttpPost]
 		public IActionResult NewCliente([FromBody] NewClienteDTO NewDTO)
 		{
 			var New = mapper.Map<Cliente>(NewDTO);
-			//var UFExists = ClienteDbContext.Estados.FirstOrDefault(X => X.UF == New.Enderecos.)			
 			CheckIfUFExists(New);
 			ClienteDbContext.Clientes.Add(New);
 			ClienteDbContext.SaveChanges();
@@ -44,12 +44,12 @@ namespace ConjuntoApiSprint6.Controllers
 		[HttpGet("{id}")]
 		public IActionResult GetCliente(Guid Id)
 		{
-			var Cliente = ReturnClienteFullInfo(Id);
-			if(Cliente == null)
+			var ReturnedCliente = ReturnClienteFullInfo(Id);
+			if(ReturnedCliente == null)
 			{
 				return NotFound();
 			}
-			var ClienteDTO = mapper.Map<GetClienteDTO>(Cliente);
+			var ClienteDTO = mapper.Map<GetClienteDTO>(ReturnedCliente);
 			return Ok(ClienteDTO);
 		}
 
@@ -84,7 +84,6 @@ namespace ConjuntoApiSprint6.Controllers
 				var UFExist = ClienteDbContext.Estados.FirstOrDefault(X => X.UF == Endereco.UF.UF);
 				if (UFExist != null)
 				{
-					Console.WriteLine("Achou {0}", UFExist.Id);
 					ClienteDbContext.Entry(Endereco).Property("EstadoId").CurrentValue = UFExist.Id;
 					Endereco.UF = null;
 				}

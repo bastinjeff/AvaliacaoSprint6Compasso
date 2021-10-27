@@ -13,5 +13,7 @@ namespace ConjuntoApiSprint6.DTOs.SysProduto.Get
 		public List<GetCidade_ProdutoDTO> cidades { get; set; }
 		public List<GetProduto_TagDTO> Tags { get; set; }
 		public List<GetCategoria_ProdutoDTO> categorias { get; set; }
+
+		public bool Frete { get; set; }
 	}
 }

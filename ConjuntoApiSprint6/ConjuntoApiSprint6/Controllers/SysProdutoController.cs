@@ -2,6 +2,7 @@
 using ConjuntoApiSprint6.Contexts;
 using ConjuntoApiSprint6.DTOs.SysProduto.Get;
 using ConjuntoApiSprint6.DTOs.SysProduto.New;
+using ConjuntoApiSprint6.DTOs.SysProduto.Update;
 using ConjuntoApiSprint6.Models.SysProduto;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -37,14 +38,6 @@ namespace ConjuntoApiSprint6.Controllers
 			return CreatedAtAction(nameof(GetProduto),new { Id = NewProduto.Id },newProdutoDTO);
 		}
 
-		[HttpGet]
-		public IActionResult GetAllProduto()
-		{
-			var Produtos = ReturnAllProdutoInfo();
-			var ProdutosDTO = mapper.Map <IEnumerable<GetProdutoDTO>>(Produtos);
-			return Ok(ProdutosDTO);				
-		}
-
 		[HttpGet("{id}")]
 		public IActionResult GetProduto(Guid Id)
 		{
@@ -57,15 +50,58 @@ namespace ConjuntoApiSprint6.Controllers
 			return Ok(ProdutoDTO);
 		}
 
+		[HttpGet]
+		public IActionResult GetProdutoWithFilter([FromQuery] ProdutoFilter Filtro, [FromQuery] ProdutoOrder Order)
+		{
+			var ProdutoDb = ReturnAllProdutoInfo().ToList();
+			if (!string.IsNullOrEmpty(Filtro.FilterDescricao))
+			{
+				ProdutoDb = ProdutoDb.Where(X => X.Descricao.Contains(Filtro.FilterDescricao)).ToList();
+			}
+			if (!string.IsNullOrEmpty(Filtro.FilterTag))
+			{
+				ProdutoDb = ProdutoDb.Where(X => X.Tags.All(Y => Y.tag.tag == Filtro.FilterTag)).ToList();
+			}
+			if (!string.IsNullOrEmpty(Filtro.FilterCategoria))
+			{
+				ProdutoDb = ProdutoDb.Where(X => X.categorias.All(Y => Y.categoria.categoria == Filtro.FilterCategoria)).ToList();
+			}
+			if (!string.IsNullOrEmpty(Order.FilterPrecoOrder))
+			{
+				if(Order.FilterPrecoOrder == "Asc")
+				{
+					ProdutoDb = ProdutoDb.OrderBy(X => X.Preco).ToList();
+				}else if(Order.FilterPrecoOrder == "Desc")
+				{
+					ProdutoDb = ProdutoDb.OrderBy(X => X.Preco).Reverse().ToList();
+				}
+			}
+			var ProdutoDbDTO = mapper.Map<IEnumerable<GetProdutoDTO>>(ProdutoDb);
+			return Ok(ProdutoDbDTO);
+		}
+
 		[HttpDelete("{id}")]
 		public IActionResult DeleteProduto(Guid Id)
 		{
-			var ReturnedProduto = ReturnAllProdutoInfo().FirstOrDefault(X => X.Id == Id);
+			var ReturnedProduto = ProdutoDbContext.Produtos.FirstOrDefault(X => X.Id == Id);
 			if (ReturnedProduto == null)
 			{
 				return NotFound();
 			}
 			ProdutoDbContext.Produtos.Remove(ReturnedProduto);
+			ProdutoDbContext.SaveChanges();
+			return NoContent();
+		}
+
+		[HttpPut("{id}")]
+		public IActionResult UpdateProduto(Guid Id, [FromBody] UpdateProdutoDTO UpdateDTO)
+		{
+			var ProdutoDb = ReturnAllProdutoInfo().FirstOrDefault(X => X.Id == Id);
+			mapper.Map(UpdateDTO, ProdutoDb);
+			CheckIfCategoriaExists(ProdutoDb);			
+			CheckIfTagExists(ProdutoDb);
+			CheckIfUFExists(ProdutoDb);
+			CheckIfCidadeExists(ProdutoDb);
 			ProdutoDbContext.SaveChanges();
 			return NoContent();
 		}

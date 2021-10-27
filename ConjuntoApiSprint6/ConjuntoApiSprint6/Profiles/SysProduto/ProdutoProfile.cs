@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using ConjuntoApiSprint6.DTOs.SysProduto.Get;
 using ConjuntoApiSprint6.DTOs.SysProduto.New;
+using ConjuntoApiSprint6.DTOs.SysProduto.Update;
 using ConjuntoApiSprint6.Models.SysProduto;
 using System;
 using System.Collections.Generic;
@@ -15,6 +16,7 @@ namespace ConjuntoApiSprint6.Profiles.SysProduto
 		{
 			CreateMap<NewProdutoDTO, Produto>();
 			CreateMap<Produto, GetProdutoDTO>();
+			CreateMap<UpdateProdutoDTO, Produto>();
 		}
 	}
 }

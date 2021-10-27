@@ -18,7 +18,7 @@ namespace ConjuntoApiSprint6.Contexts
 		public DbSet<LoginTable> LoginTables { get; set; }
 		public DbSet<Produto> Produtos { get; set; }
 		public DbSet<Produto_Tag> Produto_Tags { get; set; }
-		public DbSet<Tag> Tags { get; set; }
+		public DbSet<Tag> Tags { get; set; }		
 
 		public SysProdutoDbContext(DbContextOptions<SysProdutoDbContext> options) : base(options)
 		{

@@ -1,0 +1,127 @@
+{
+	"info": {
+		"_postman_id": "24e03b38-871d-4ab5-881f-557cec0a4acf",
+		"name": "Coleção SysProduto",
+		"description": "Essa coleção é dedicada às funcionalidades do SysProduto com os endpoints interessantes para um usuário comum e tambem um endpoint para adicionar um novo produto.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Novo produto",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"nome\": \"Teste Insere2\",\r\n  \"descricao\": \"Esse Produto está sendo inserido nesse momento\",\r\n  \"preco\": \"1050\",\r\n  \"cidades\": [\r\n    {\r\n      \"cidade\": {\r\n        \"cidade\": \"Nova2\",\r\n        \"estado\": {\r\n          \"uf\": \"ESS\"\r\n        }\r\n      }\r\n    }\r\n  ],\r\n  \"tags\": [\r\n    {\r\n      \"tag\": {\r\n        \"tag\": \"Tag Massa3\"\r\n      }\r\n    }\r\n  ],\r\n  \"categorias\": [\r\n    {\r\n      \"categoria\": {\r\n        \"categoria\": \"Categoriazona\"\r\n      }\r\n    }\r\n  ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://localhost:5001/api/SysProduto",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "5001",
+					"path": [
+						"api",
+						"SysProduto"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Com Filtro",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"id\": \"89f390dc-491d-4329-e443-08d999aa8fdd\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://localhost:5001/api/SysProduto",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "5001",
+					"path": [
+						"api",
+						"SysProduto"
+					],
+					"query": [
+						{
+							"key": "FilterDescricao",
+							"value": "",
+							"disabled": true
+						},
+						{
+							"key": "FilterTag",
+							"value": "",
+							"disabled": true
+						},
+						{
+							"key": "FilterCategoria",
+							"value": "",
+							"disabled": true
+						},
+						{
+							"key": "FilterPrecoOrder",
+							"value": "",
+							"description": "Utilizar Asc ou Desc para ascendente e descendente respectivamente",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Produto Por Id",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"id\": \"85cc89fe-4f74-4bce-fde8-08d999a79018\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://localhost:5001/api/SysProduto/85cc89fe-4f74-4bce-fde8-08d999a79018",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "5001",
+					"path": [
+						"api",
+						"SysProduto",
+						"85cc89fe-4f74-4bce-fde8-08d999a79018"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

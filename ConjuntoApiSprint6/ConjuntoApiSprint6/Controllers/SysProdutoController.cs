@@ -20,9 +20,11 @@ namespace ConjuntoApiSprint6.Controllers
 	public class SysProdutoController : MainController
 	{
 		SysProdutoDbContext ProdutoDbContext;
-		public SysProdutoController(SysProdutoDbContext ProdutoDbContext, IMapper mapper) : base(mapper)
+		SysClienteDbContext ClienteDbContext;
+		public SysProdutoController(SysProdutoDbContext ProdutoDbContext, SysClienteDbContext ClienteDbContext, IMapper mapper) : base(mapper)
 		{
 			this.ProdutoDbContext = ProdutoDbContext;
+			this.ClienteDbContext = ClienteDbContext;
 		}
 
 		[HttpPost]
@@ -56,6 +58,14 @@ namespace ConjuntoApiSprint6.Controllers
 		{
 			Console.WriteLine(User.Id);
 			var ProdutoDb = ReturnAllProdutoInfo().ToList();
+			FilterProduto(ProdutoDb, Filtro, Order);
+			var ProdutoDbDTO = mapper.Map<IEnumerable<GetProdutoDTO>>(ProdutoDb);
+			DefineFrete(ProdutoDbDTO, User);
+			return Ok(ProdutoDbDTO);
+		}
+
+		private void FilterProduto(List<Produto> ProdutoDb, ProdutoFilter Filtro, ProdutoOrder Order)
+		{
 			if (!string.IsNullOrEmpty(Filtro.FilterDescricao))
 			{
 				ProdutoDb = ProdutoDb.Where(X => X.Descricao.Contains(Filtro.FilterDescricao)).ToList();
@@ -70,16 +80,38 @@ namespace ConjuntoApiSprint6.Controllers
 			}
 			if (!string.IsNullOrEmpty(Order.FilterPrecoOrder))
 			{
-				if(Order.FilterPrecoOrder == "Asc")
+				if (Order.FilterPrecoOrder == "Asc")
 				{
 					ProdutoDb = ProdutoDb.OrderBy(X => X.Preco).ToList();
-				}else if(Order.FilterPrecoOrder == "Desc")
+				}
+				else if (Order.FilterPrecoOrder == "Desc")
 				{
 					ProdutoDb = ProdutoDb.OrderBy(X => X.Preco).Reverse().ToList();
 				}
 			}
-			var ProdutoDbDTO = mapper.Map<IEnumerable<GetProdutoDTO>>(ProdutoDb);
-			return Ok(ProdutoDbDTO);
+		}
+
+		private void DefineFrete(IEnumerable<GetProdutoDTO> ProdutoDbDTO, LoginIdDTO User)
+		{
+			var CurrentUser = ClienteDbContext.Clientes.Include(X => X.Enderecos).ThenInclude(X => X.UF).FirstOrDefault(X => X.Id == User.Id);
+			var MainCidade = CurrentUser.Enderecos.FirstOrDefault(X => X.Principal);
+			bool Achou = false;
+			foreach (var Produto in ProdutoDbDTO)
+			{
+				Achou = true;
+				foreach (var CP in Produto.cidades)
+				{
+					if (CP.cidade.cidade == MainCidade.Cidade && CP.cidade.estado.UF == MainCidade.UF.UF)
+					{
+						Achou = false;
+					}
+				}
+				if (Achou)
+				{
+					Produto.Preco += 29.90;
+					Produto.Frete = true;
+				}
+			}
 		}
 
 		private IIncludableQueryable<Produto,Estado> ReturnAllProdutoInfo()
@@ -94,7 +126,7 @@ namespace ConjuntoApiSprint6.Controllers
 		{
 			foreach(var Cidade in New.cidades)
 			{
-				Cidade CidadeExist;
+				Cidade CidadeExist = null;
 				if(Cidade.cidade.estado != null)
 				{
 					CidadeExist = ProdutoDbContext.Cidades.
@@ -104,9 +136,16 @@ namespace ConjuntoApiSprint6.Controllers
 				else
 				{
 					var NewCidadeEstadoId = (Guid)ProdutoDbContext.Entry(Cidade.cidade).Property("EstadoId").CurrentValue;
-					CidadeExist = ProdutoDbContext.Cidades.
-					Single(X => (X.cidade == Cidade.cidade.cidade)
-					&& (EF.Property<Guid>(X, "EstadoId") == NewCidadeEstadoId));
+					try
+					{
+						CidadeExist = ProdutoDbContext.Cidades.
+											Single(X => (X.cidade == Cidade.cidade.cidade)
+											&& (EF.Property<Guid>(X, "EstadoId") == NewCidadeEstadoId));
+					}catch(Exception C)
+					{
+
+					}
+					
 				}
 				
 				if(CidadeExist != null)

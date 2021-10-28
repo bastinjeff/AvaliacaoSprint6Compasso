@@ -10,6 +10,6 @@ namespace ConjuntoApiSprint6.Models.Auditoria
 	{
 		public LoginIdDTO User { get; set; }
 		public DateTime AcessTime { get; set; }
-		public Guid ProdutoId { get; set; }
+		public IEnumerable<Guid> ProdutoIds { get; set; }
 	}
 }

@@ -9,23 +9,23 @@ namespace ConjuntoApiSprint6.Operations.Auditoria
 {
 	public static class MongoDbOperations<T>
 	{
-		public static void InsertNewDataInMongoDb(string StringConnection, string DatabaseName, string CollectionName, T Error)
+		public static void InsertNewDataInMongoDb(string StringConnection, string DatabaseName, string CollectionName, T Data)
 		{
-			var Server = AbrirConexaoComMongoDB(StringConnection);
-			var Database = AbrirConexaoComDatabaseMongoDB(Server, DatabaseName);
-			var Collection = AbrirConexaoComColecaoMongoDB(Database, CollectionName);
-			Collection.InsertOne(Error);
+			var Server = OpenConnectionMongoDB(StringConnection);
+			var Database = OpenConnectionDatabaseMongoDB(Server, DatabaseName);
+			var Collection = OpenConnectionCollectionMongoDB(Database, CollectionName);
+			Collection.InsertOne(Data);
 		}
-		private static IMongoClient AbrirConexaoComMongoDB(string StringConnection)
+		private static IMongoClient OpenConnectionMongoDB(string StringConnection)
 		{
 			return new MongoClient(StringConnection);
 		}
-		private static IMongoDatabase AbrirConexaoComDatabaseMongoDB(IMongoClient Servidor, string NomeDatabase)
+		private static IMongoDatabase OpenConnectionDatabaseMongoDB(IMongoClient Servidor, string NomeDatabase)
 		{
 			return Servidor.GetDatabase(NomeDatabase);
 		}
 
-		private static IMongoCollection<T> AbrirConexaoComColecaoMongoDB(IMongoDatabase BancoPedidos, string NomeColecao)
+		private static IMongoCollection<T> OpenConnectionCollectionMongoDB(IMongoDatabase BancoPedidos, string NomeColecao)
 		{
 			return BancoPedidos.GetCollection<T>(NomeColecao);
 		}

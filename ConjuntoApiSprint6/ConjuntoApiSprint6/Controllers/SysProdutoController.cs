@@ -67,6 +67,8 @@ namespace ConjuntoApiSprint6.Controllers
 					return NotFound();
 				}
 				var ProdutoDTO = mapper.Map<GetProdutoDTO>(ReturnedProduto);
+				List<Guid> ProdutoIdForMongo = new List<Guid>() { ReturnedProduto.Id };
+				InsertNewUserAccess(User, ProdutoIdForMongo);
 				return Ok(ProdutoDTO);
 
 			}catch(Exception E)
@@ -84,6 +86,12 @@ namespace ConjuntoApiSprint6.Controllers
 			{
 				var ProdutoDb = ReturnAllProdutoInfo().ToList();
 				FilterProduto(ProdutoDb, Filtro, Order);
+				List<Guid> ProdutoIdForMongo = new List<Guid>();
+				foreach(var Prod in ProdutoDb)
+				{
+					ProdutoIdForMongo.Add(Prod.Id);
+				}
+				InsertNewUserAccess(User, ProdutoIdForMongo);
 				var ProdutoDbDTO = mapper.Map<IEnumerable<GetProdutoDTO>>(ProdutoDb);
 				DefineFrete(ProdutoDbDTO, User);
 				return Ok(ProdutoDbDTO);
@@ -223,6 +231,15 @@ namespace ConjuntoApiSprint6.Controllers
 					Cidade.cidade.estado = null;
 				}
 			}
+		}
+
+		private void InsertNewUserAccess(LoginIdDTO User, IEnumerable<Guid> ProdutoIds)
+		{
+			UserAccess UA = new UserAccess();
+			UA.User = User;
+			UA.ProdutoIds = ProdutoIds;
+			UA.AcessTime = DateTime.Now;
+			MongoDbOperations<UserAccess>.InsertNewDataInMongoDb(StringConncetionMongoDB, DatabaseName, UserAccessCollectionName,UA);
 		}
 
 		private void InsertNewError(Exception E, string ErrorAbstract)

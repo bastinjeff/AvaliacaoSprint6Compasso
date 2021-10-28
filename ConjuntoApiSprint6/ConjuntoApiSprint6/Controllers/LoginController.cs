@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using ConjuntoApiSprint6.Contexts;
+using ConjuntoApiSprint6.DTOs.User;
 using ConjuntoApiSprint6.DTOs.User.Get;
 using ConjuntoApiSprint6.DTOs.User.New;
 using ConjuntoApiSprint6.Models.SysProduto;
@@ -44,6 +45,24 @@ namespace ConjuntoApiSprint6.Controllers
 			var Login = ProdutoDbContext.LoginTables.FirstOrDefault(X => X.Id == Id);
 			var LoginDTO = mapper.Map<GetLoginDTO>(Login);
 			return Ok(LoginDTO);
+		}
+
+		public IActionResult Logar([FromBody] LoginDTO UserLogin)
+		{
+			var login = ProdutoDbContext.LoginTables;
+			foreach(var Log in login)
+			{
+				if(Log.Login == UserLogin.Login)
+				{
+					if(Log.Senha == UserLogin.Senha)
+					{
+						var LogId = new LoginIdDTO();
+						LogId.Id = Log.Id;
+						return Ok(LogId);
+					}
+				}
+			}
+			return BadRequest();
 		}
 	}
 }

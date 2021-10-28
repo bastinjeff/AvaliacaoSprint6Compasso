@@ -3,6 +3,7 @@ using ConjuntoApiSprint6.Contexts;
 using ConjuntoApiSprint6.DTOs.SysProduto.Get;
 using ConjuntoApiSprint6.DTOs.SysProduto.New;
 using ConjuntoApiSprint6.DTOs.SysProduto.Update;
+using ConjuntoApiSprint6.DTOs.User;
 using ConjuntoApiSprint6.Models.SysProduto;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -39,7 +40,7 @@ namespace ConjuntoApiSprint6.Controllers
 		}
 
 		[HttpGet("{id}")]
-		public IActionResult GetProduto(Guid Id)
+		public IActionResult GetProduto(Guid Id, [FromBody] LoginIdDTO User)
 		{
 			var ReturnedProduto = ReturnAllProdutoInfo().FirstOrDefault(X => X.Id == Id);
 			if(ReturnedProduto == null)
@@ -51,8 +52,9 @@ namespace ConjuntoApiSprint6.Controllers
 		}
 
 		[HttpGet]
-		public IActionResult GetProdutoWithFilter([FromQuery] ProdutoFilter Filtro, [FromQuery] ProdutoOrder Order)
+		public IActionResult GetProdutoWithFilter([FromQuery] ProdutoFilter Filtro, [FromQuery] ProdutoOrder Order, [FromBody] LoginIdDTO User)
 		{
+			Console.WriteLine(User.Id);
 			var ProdutoDb = ReturnAllProdutoInfo().ToList();
 			if (!string.IsNullOrEmpty(Filtro.FilterDescricao))
 			{
@@ -78,32 +80,6 @@ namespace ConjuntoApiSprint6.Controllers
 			}
 			var ProdutoDbDTO = mapper.Map<IEnumerable<GetProdutoDTO>>(ProdutoDb);
 			return Ok(ProdutoDbDTO);
-		}
-
-		[HttpDelete("{id}")]
-		public IActionResult DeleteProduto(Guid Id)
-		{
-			var ReturnedProduto = ProdutoDbContext.Produtos.FirstOrDefault(X => X.Id == Id);
-			if (ReturnedProduto == null)
-			{
-				return NotFound();
-			}
-			ProdutoDbContext.Produtos.Remove(ReturnedProduto);
-			ProdutoDbContext.SaveChanges();
-			return NoContent();
-		}
-
-		[HttpPut("{id}")]
-		public IActionResult UpdateProduto(Guid Id, [FromBody] UpdateProdutoDTO UpdateDTO)
-		{
-			var ProdutoDb = ReturnAllProdutoInfo().FirstOrDefault(X => X.Id == Id);
-			mapper.Map(UpdateDTO, ProdutoDb);
-			CheckIfCategoriaExists(ProdutoDb);			
-			CheckIfTagExists(ProdutoDb);
-			CheckIfUFExists(ProdutoDb);
-			CheckIfCidadeExists(ProdutoDb);
-			ProdutoDbContext.SaveChanges();
-			return NoContent();
 		}
 
 		private IIncludableQueryable<Produto,Estado> ReturnAllProdutoInfo()

@@ -34,11 +34,19 @@ namespace ConjuntoApiSprint6.Controllers
 		[HttpPost]
 		public IActionResult NewCliente([FromBody] NewClienteDTO NewDTO)
 		{
-			var New = mapper.Map<Cliente>(NewDTO);
-			CheckIfUFExists(New);
-			ClienteDbContext.Clientes.Add(New);
-			ClienteDbContext.SaveChanges();
-			return CreatedAtAction(nameof(GetCliente),new { id = New.Id }, NewDTO);
+			try
+			{
+				var New = mapper.Map<Cliente>(NewDTO);
+				CheckIfUFExists(New);
+				ClienteDbContext.Clientes.Add(New);
+				ClienteDbContext.SaveChanges();
+				return CreatedAtAction(nameof(GetCliente),new { id = New.Id }, NewDTO);
+
+			}catch(DbUpdateException E)
+			{
+				Console.WriteLine(E.Message);
+				return StatusCode(500);
+			}
 		}
 
 		[HttpGet("{id}")]

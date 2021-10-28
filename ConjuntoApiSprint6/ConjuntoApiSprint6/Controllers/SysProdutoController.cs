@@ -4,7 +4,9 @@ using ConjuntoApiSprint6.DTOs.SysProduto.Get;
 using ConjuntoApiSprint6.DTOs.SysProduto.New;
 using ConjuntoApiSprint6.DTOs.SysProduto.Update;
 using ConjuntoApiSprint6.DTOs.User;
+using ConjuntoApiSprint6.Models.Auditoria;
 using ConjuntoApiSprint6.Models.SysProduto;
+using ConjuntoApiSprint6.Operations.Auditoria;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
@@ -21,6 +23,11 @@ namespace ConjuntoApiSprint6.Controllers
 	{
 		SysProdutoDbContext ProdutoDbContext;
 		SysClienteDbContext ClienteDbContext;
+		string StringConncetionMongoDB = "mongodb://localhost:27017";
+		string DatabaseName = "Auditoria";
+		string ErrorColecctionName = "Errors";
+		string UserAccessCollectionName = "UserAccess";
+
 		public SysProdutoController(SysProdutoDbContext ProdutoDbContext, SysClienteDbContext ClienteDbContext, IMapper mapper) : base(mapper)
 		{
 			this.ProdutoDbContext = ProdutoDbContext;
@@ -30,38 +37,62 @@ namespace ConjuntoApiSprint6.Controllers
 		[HttpPost]
 		public IActionResult NewProduto([FromBody] NewProdutoDTO newProdutoDTO)
 		{
-			var NewProduto = mapper.Map<Produto>(newProdutoDTO);
-			//Console.WriteLine(NewProduto.cidades[0].cidade.cidade);
-			CheckIfUFExists(NewProduto);
-			CheckIfCidadeExists(NewProduto);
-			CheckIfTagExists(NewProduto);
-			CheckIfCategoriaExists(NewProduto);			
-			ProdutoDbContext.Produtos.Add(NewProduto);
-			ProdutoDbContext.SaveChanges();
-			return CreatedAtAction(nameof(GetProduto),new { Id = NewProduto.Id },newProdutoDTO);
+			try
+			{
+				var NewProduto = mapper.Map<Produto>(newProdutoDTO);
+				CheckIfUFExists(NewProduto);
+				CheckIfCidadeExists(NewProduto);
+				CheckIfTagExists(NewProduto);
+				CheckIfCategoriaExists(NewProduto);
+				ProdutoDbContext.Produtos.Add(NewProduto);
+				ProdutoDbContext.SaveChanges();
+				return CreatedAtAction(nameof(GetProduto), new { Id = NewProduto.Id }, newProdutoDTO);
+			}
+			catch (Exception E)
+			{
+				string ErrorAbstract = "Error while trying to add new Produto";
+				InsertNewError(E, ErrorAbstract);
+				return StatusCode(500);
+			}
 		}
 
 		[HttpGet("{id}")]
 		public IActionResult GetProduto(Guid Id, [FromBody] LoginIdDTO User)
 		{
-			var ReturnedProduto = ReturnAllProdutoInfo().FirstOrDefault(X => X.Id == Id);
-			if(ReturnedProduto == null)
+			try
 			{
-				return NotFound();
+				var ReturnedProduto = ReturnAllProdutoInfo().FirstOrDefault(X => X.Id == Id);
+				if(ReturnedProduto == null)
+				{
+					return NotFound();
+				}
+				var ProdutoDTO = mapper.Map<GetProdutoDTO>(ReturnedProduto);
+				return Ok(ProdutoDTO);
+
+			}catch(Exception E)
+			{
+				string ErrorAbstract = "Error Trying to Get Produto by Id";
+				InsertNewError(E, ErrorAbstract);
+				return StatusCode(500);
 			}
-			var ProdutoDTO = mapper.Map<GetProdutoDTO>(ReturnedProduto);
-			return Ok(ProdutoDTO);
 		}
 
 		[HttpGet]
 		public IActionResult GetProdutoWithFilter([FromQuery] ProdutoFilter Filtro, [FromQuery] ProdutoOrder Order, [FromBody] LoginIdDTO User)
 		{
-			Console.WriteLine(User.Id);
-			var ProdutoDb = ReturnAllProdutoInfo().ToList();
-			FilterProduto(ProdutoDb, Filtro, Order);
-			var ProdutoDbDTO = mapper.Map<IEnumerable<GetProdutoDTO>>(ProdutoDb);
-			DefineFrete(ProdutoDbDTO, User);
-			return Ok(ProdutoDbDTO);
+			try
+			{
+				var ProdutoDb = ReturnAllProdutoInfo().ToList();
+				FilterProduto(ProdutoDb, Filtro, Order);
+				var ProdutoDbDTO = mapper.Map<IEnumerable<GetProdutoDTO>>(ProdutoDb);
+				DefineFrete(ProdutoDbDTO, User);
+				return Ok(ProdutoDbDTO);
+			}catch(Exception E)
+			{
+				string ErrorAbstract = "Error trying to get produto with filter";
+				InsertNewError(E, ErrorAbstract);
+				return StatusCode(500);
+			}
 		}
 
 		private void FilterProduto(List<Produto> ProdutoDb, ProdutoFilter Filtro, ProdutoOrder Order)
@@ -192,6 +223,15 @@ namespace ConjuntoApiSprint6.Controllers
 					Cidade.cidade.estado = null;
 				}
 			}
+		}
+
+		private void InsertNewError(Exception E, string ErrorAbstract)
+		{
+			ErrorObject Error = new ErrorObject();
+			Error.ErrorAbstract = ErrorAbstract;
+			Error.ErrorMessage = E.Message;
+			Error.ErrorTime = DateTime.Now;
+			MongoDbOperations<ErrorObject>.InsertNewDataInMongoDb(StringConncetionMongoDB, DatabaseName, ErrorColecctionName, Error);
 		}
 	}
 }

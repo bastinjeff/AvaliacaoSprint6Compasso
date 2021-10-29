@@ -17,4 +17,7 @@ Bugs e problemas conhecidos:
   O tratamento de excessões é genérico, sem de fato resolver a excessão, apenas impedindo ela de travar o sistema inteiro.
   O registro de excessões no MongoDB poderia ser mais descritivo.
 
+IMPORTANTE:
+  Devido a falta de uso da permanencia do login, é NECESSÁRIO atualizar o ID do usuário no CORPO do get para buscar produtos, tanto por ID quanto por filtro. Ele é utilizado para gravar que usuário buscou qual produto dentro do sistema. Sem isso o codigo irá TRAVAR pois não foi colocado um try catch naquele trecho em especifico.
+
 Qualquer duvida ou problema por favor me contatem via TEAMS ou meu telefone: (55) 9 9941-5691
